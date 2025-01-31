@@ -3,9 +3,25 @@ package core
 import (
 	"database/sql"
 	"fmt"
-	_"os"
-	_"github.com/go-sql-driver/mysql"
+	_ "os"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/BurntSushi/toml"
 )
+
+type Config struct {
+    Database DatabaseConfig `toml:"database"`
+    Server   ServerConfig   `toml:"server"`
+}
+
+type DatabaseConfig struct {
+    DNS string `toml:"dns"`
+}
+
+type ServerConfig struct {
+    Port  int  `toml:"port"`
+    Debug bool `toml:"debug"`
+}
 
 type ConectionMySQL struct{
 	DB *sql.DB
@@ -15,14 +31,18 @@ type ConectionMySQL struct{
 func MySQLConection() *ConectionMySQL {
 	error := ""
 
+	var config Config
+
+	if _, err := toml.DecodeFile("config.toml", &config); err != nil {
+		error = fmt.Sprintf("Error al leer el archivo toml: ", err)
+	}
+
 	//user := os.Getenv("USERNAME")
 	//pwd := os.Getenv("PASSWORD123")
 	//db_name := os.Getenv("DATABASE123")
 	//host := os.Getenv("HOST123")
 
-	dns := "root:Chup3nm33lRif10t3@tcp(127.0.0.1:3306)/hexagonal_db"
-
-	db, err := sql.Open("mysql", dns)
+	db, err := sql.Open("mysql", config.Database.DNS)
 
 	if err != nil {
 		error = fmt.Sprintf("Error al establecer la conexión con la BD:", err)
