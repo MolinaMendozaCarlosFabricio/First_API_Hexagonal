@@ -13,6 +13,8 @@ func UserRoutes(r *gin.Engine){
 	ru_controller := controllers.NewRegisterUserController(*ru)
 	gu := application.NewGetUser(ps)
 	gu_controller := controllers.NewGetUserController(*gu)
+	gau := application.NewGetAllUsers(ps)
+	gau_controller := controllers.NewGetAllUsersController(*gau)
 	eu := application.NewEditUser(ps)
 	eu_controller := controllers.NewEditUserController(*eu)
 	du := application.NewDeleteUser(ps)
@@ -22,6 +24,7 @@ func UserRoutes(r *gin.Engine){
 	{
 		users.POST("/", ru_controller.Execute)
 		users.GET("/:id", gu_controller.Execute)
+		users.GET("/", gau_controller.Execute)
 		users.PUT("/:id", eu_controller.Execute)
 		users.DELETE("/:id", du_controller.Execute)
 	}

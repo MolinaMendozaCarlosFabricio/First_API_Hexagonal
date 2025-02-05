@@ -28,6 +28,26 @@ func (r *UserRepoMySQL) SaveUserFunction(user domain.User)error{
     return err
 }
 
+func (r *UserRepoMySQL) GetAllUserFunction()([]domain.User, error){
+	rows, err := r.Connection.FetchRows("SELECT id, username, email FROM User")
+	var users []domain.User
+	if err != nil {
+		log.Fatalf("Error al obtener Ususarios:", err)
+	}
+	defer rows.Close()
+	for rows.Next(){
+		var id int32
+		var username string
+		var email string
+		if err := rows.Scan(&id, &username, &email); err != nil{
+			log.Println("Error al escanear la fila:", err)
+		}
+		user := domain.User{ID: id, Username: username, Email: email, Password: ""}
+		users = append(users, user)
+	}
+	return users, err
+}
+
 func (r *UserRepoMySQL) GetUserFunction(id int32)([]domain.User, error){
 	query := "SELECT id, username, email FROM User WHERE id = ?"
 	rows, err := r.Connection.FetchRows(query, id)
