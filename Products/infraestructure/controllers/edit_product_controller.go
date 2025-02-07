@@ -19,8 +19,8 @@ func NewEditProductController(uc *aplication.EditProduct)*EditProductController{
 
 func(controller *EditProductController)Execute(c *gin.Context){
 	var input struct {
-		Name string `json:"name"`
-		Price float32 `json:"price"`
+		Name string `json:"Name"`
+		Price float32 `json:"Price"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
